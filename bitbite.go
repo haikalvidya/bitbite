@@ -56,7 +56,6 @@ func fromDecimal(theDecimal int) (string, int, int) {
 		if sisa >= 10 && sisa <= 15 {
 			sisa := hexOverflow[sisa-10]
 			hasil = sisa + hasil
-			fmt.Println("Masuk")
 		} else {
 			hasil = strconv.Itoa(sisa) + hasil
 		}
@@ -108,24 +107,42 @@ func fromHex(theHex string) (int, int, int) {
 	decimal = hasil
 
 	// find octal
-	hasil = 0
-	if zeroCheck == 0 && err == nil {
-		hasil = zeroCheck
-	}
-	for a := decimal; a > 0; {
-		sisa := a%8
-		a = a/8
-		x := strconv.Itoa(sisa)
-		y :=  strconv.Itoa(hasil)
-		if y == "0" && a > 1 {
-			hasil, _ = strconv.Atoi(x)
-		} else {
-			hasil, _ = strconv.Atoi(x + y)
-		}
-	}
+	_, hasil, _ = fromDecimal(decimal)
 	octal = hasil
 
+	// find binary
+	_, _, hasil = fromDecimal(decimal)
+	binary = hasil
 	return decimal, octal, binary
+}
+
+func fromOctal(theOctal int) (int, string, int) {
+	var decimal, binary int
+	var hex string
+
+	// find decimal
+	var hasil int
+	if theOctal == 0{
+		hasil = theOctal
+	}
+	lenOctal := len(strconv.Itoa(theOctal))
+	var value,i int
+	for ; lenOctal>0; lenOctal-- {
+		charOctal, _ := strconv.Atoi(strings.Split(strconv.Itoa(theOctal), "")[i])
+		value = int(math.Pow(8,float64(lenOctal-1)))*charOctal
+		hasil += value
+		i += 1
+	}
+	decimal = hasil
+
+	// find hex 
+	hex, _, _ = fromDecimal(decimal)
+
+	// find binary
+	_, _, hasil = fromDecimal(decimal)
+	binary = hasil
+
+	return decimal, hex, binary
 }
 
 func inputSanitazed() (int, error) {
@@ -155,10 +172,17 @@ func main(){
 			fmt.Scanln(&number)
 			decimal, octal, binary := fromHex(strings.ToUpper(number))
 			fmt.Println("Decimal :", decimal, "\nOctal :", octal, "\nBinary :", binary)
-		// case 3:
-		// 	fromOctal()
-		// case 4:
-		// 	fromBinary()
+		case 3:
+			fmt.Print("Input octal number : ")
+			number, err := inputSanitazed()
+			if err != nil {
+				fmt.Println("The Input must be number")
+			} else {
+				decimal, hex, binary := fromOctal(number)
+				fmt.Println("Decimal :", decimal, "\nHex :", hex, "\nBinary :", binary)
+			}
+		case 4:
+			fromBinary()
 		default:
 			fmt.Println("Tidak ada di pilihan")
 	}
