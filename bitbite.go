@@ -6,9 +6,19 @@ import (
 	"bufio"
 	"strings"
 	"strconv"
+	"math"
 )
 
-var hexOverflow = [6]string{"A", "B", "C", "D", "E", "F"}
+var hexOverflow = []string{"A", "B", "C", "D", "E", "F"}
+
+func indexOf(element string, data []string) (int) {
+	for k, v := range data {
+		if element == v {
+			return k
+		}
+	}
+	return -1
+} 
 
 func fromDecimal(theDecimal int) (string, int, int) {
 	var neg bool
@@ -74,21 +84,48 @@ func fromDecimal(theDecimal int) (string, int, int) {
 	return hex, octal, binary
 }
 
-func fromHex(theHex int) (int, int, int) {
+func fromHex(theHex string) (int, int, int) {
 	var decimal, octal, binary int
-	var neg bool
-	if theHex < 0 {
-		theHex = theHex*-1
-		neg = True
-	}
 
 	// find decimal
-	var hasil string
-	for if theHex == 0 {
-		hasil = strconv.Itoa(theHex)
+	var hasil int
+	zeroCheck, err := strconv.Atoi(theHex)
+	if zeroCheck == 0 && err == nil {
+		hasil = zeroCheck
 	}
-	lenHex = len(theHex)
+	lenHex := len(theHex)
+	var value,i int
+	for ; lenHex>0; lenHex-- {
+		charCheck, err := strconv.Atoi(strings.Split(theHex, "")[i])
+		if err == nil {
+			value = int(math.Pow(16,float64(lenHex-1)))*charCheck
+		} else {
+			value = int(math.Pow(16,float64(lenHex-1)))*(indexOf(strings.Split(theHex, "")[i], hexOverflow)+10)
+		}
+		hasil += value
+		i += 1
+	}
+	decimal = hasil
 
+	// find octal
+	hasil = 0
+	if zeroCheck == 0 && err == nil {
+		hasil = zeroCheck
+	}
+	for a := decimal; a > 0; {
+		sisa := a%8
+		a = a/8
+		x := strconv.Itoa(sisa)
+		y :=  strconv.Itoa(hasil)
+		if y == "0" && a > 1 {
+			hasil, _ = strconv.Atoi(x)
+		} else {
+			hasil, _ = strconv.Atoi(x + y)
+		}
+	}
+	octal = hasil
+
+	return decimal, octal, binary
 }
 
 func inputSanitazed() (int, error) {
@@ -101,11 +138,11 @@ func inputSanitazed() (int, error) {
 
 func main(){
 	fmt.Println("List Converter from : \n1. Decimal\n2. Hex\n3. Octal\n4. Binary\nctrl+c to exit")
-	theCase, _ := inputSanitazedToInteger()
+	theCase, _ := inputSanitazed()
 	switch theCase {
 		case 1:
 			fmt.Print("Input decimal number : ")
-			number, err := inputSanitazedToInteger()
+			number, err := inputSanitazed()
 			if err != nil {
 				fmt.Println("The Input must be number")
 			} else {
@@ -116,8 +153,8 @@ func main(){
 			fmt.Print("Input hex : ")
 			var number string
 			fmt.Scanln(&number)
-			decimal, octal, binary := fromHex(number)
-			fmt.Println("Decimal :", hex, "\nOctal :", octal, "\nBinary :", binary)
+			decimal, octal, binary := fromHex(strings.ToUpper(number))
+			fmt.Println("Decimal :", decimal, "\nOctal :", octal, "\nBinary :", binary)
 		// case 3:
 		// 	fromOctal()
 		// case 4:
