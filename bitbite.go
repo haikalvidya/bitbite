@@ -158,7 +158,7 @@ func fromBinary(theBinary int) (int, string, int) {
 	var value,i int
 	for ; lenBinary>0; lenBinary-- {
 		charOctal, _ := strconv.Atoi(strings.Split(strconv.Itoa(theBinary), "")[i])
-		value = int(math.Pow(8,float64(lenBinary-1)))*charOctal
+		value = int(math.Pow(2,float64(lenBinary-1)))*charOctal
 		hasil += value
 		i += 1
 	}
@@ -183,43 +183,46 @@ func inputSanitazed() (int, error) {
 }
 
 func main(){
-	fmt.Println("List Converter from : \n1. Decimal\n2. Hex\n3. Octal\n4. Binary\nctrl+c to exit")
-	theCase, _ := inputSanitazed()
-	switch theCase {
-		case 1:
-			fmt.Print("Input decimal number : ")
-			number, err := inputSanitazed()
-			if err != nil {
-				fmt.Println("The Input must be number")
-			} else {
-				hex, octal, binary := fromDecimal(number)
-				fmt.Println("Hexadecimal :", hex, "\nOctal :", octal, "\nBinary :", binary)
-			}
-		case 2:
-			fmt.Print("Input hex : ")
-			var number string
-			fmt.Scanln(&number)
-			decimal, octal, binary := fromHex(strings.ToUpper(number))
-			fmt.Println("Decimal :", decimal, "\nOctal :", octal, "\nBinary :", binary)
-		case 3:
-			fmt.Print("Input octal number : ")
-			number, err := inputSanitazed()
-			if err != nil {
-				fmt.Println("The Input must be number")
-			} else {
-				decimal, hex, binary := fromOctal(number)
-				fmt.Println("Decimal :", decimal, "\nHex :", hex, "\nBinary :", binary)
-			}
-		case 4:
-			fmt.Print("Input binary number : ")
-			number, err := inputSanitazed()
-			if err != nil {
-				fmt.Println("The Input must be number")
-			} else {
-				decimal, hex, octal := fromBinary(number)
-				fmt.Println("Decimal :", decimal, "\nHex :", hex, "\nOctal :", octal)
-			}
-		default:
-			fmt.Println("Tidak ada di pilihan")
+	for {
+		fmt.Println("List Converter from : \n1. Decimal\n2. Hex\n3. Octal\n4. Binary\nctrl+c to exit")
+		theCase, _ := inputSanitazed()
+		switch theCase {
+			case 1:
+				fmt.Print("\nInput decimal number : ")
+				number, err := inputSanitazed()
+				if err != nil {
+					fmt.Println("The Input must be number")
+				} else {
+					hex, octal, binary := fromDecimal(number)
+					fmt.Println("Hexadecimal :", hex, "\nOctal :", octal, "\nBinary :", binary)
+				}
+			case 2:
+				fmt.Print("Input hex : ")
+				var number string
+				fmt.Scanln(&number)
+				decimal, octal, binary := fromHex(strings.ToUpper(number))
+				fmt.Println("Decimal :", decimal, "\nOctal :", octal, "\nBinary :", binary)
+			case 3:
+				fmt.Print("Input octal number : ")
+				number, err := inputSanitazed()
+				if err != nil {
+					fmt.Println("The Input must be number")
+				} else {
+					decimal, hex, binary := fromOctal(number)
+					fmt.Println("Decimal :", decimal, "\nHex :", hex, "\nBinary :", binary)
+				}
+			case 4:
+				fmt.Print("Input binary number : ")
+				number, err := inputSanitazed()
+				if err != nil {
+					fmt.Println("The Input must be number")
+				} else {
+					decimal, hex, octal := fromBinary(number)
+					fmt.Println("Decimal :", decimal, "\nHex :", hex, "\nOctal :", octal)
+				}
+			default:
+				fmt.Println("Tidak ada di pilihan")
+		fmt.Println("\n")
+		}
 	}
 }
