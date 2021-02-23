@@ -145,6 +145,35 @@ func fromOctal(theOctal int) (int, string, int) {
 	return decimal, hex, binary
 }
 
+func fromBinary(theBinary int) (int, string, int) {
+	var decimal, octal int
+	var hex string
+
+	// find decimal
+	var hasil int
+	if theBinary == 0{
+		hasil = theBinary
+	}
+	lenBinary := len(strconv.Itoa(theBinary))
+	var value,i int
+	for ; lenBinary>0; lenBinary-- {
+		charOctal, _ := strconv.Atoi(strings.Split(strconv.Itoa(theBinary), "")[i])
+		value = int(math.Pow(8,float64(lenBinary-1)))*charOctal
+		hasil += value
+		i += 1
+	}
+	decimal = hasil
+
+	// find hex 
+	hex, _, _ = fromDecimal(decimal)
+
+	// find octal
+	_, hasil, _ = fromDecimal(decimal)
+	octal = hasil
+
+	return decimal, hex, octal
+}
+
 func inputSanitazed() (int, error) {
 	reader := bufio.NewReader(os.Stdin)
 	theInput, _ := reader.ReadString('\n')
@@ -182,7 +211,14 @@ func main(){
 				fmt.Println("Decimal :", decimal, "\nHex :", hex, "\nBinary :", binary)
 			}
 		case 4:
-			fromBinary()
+			fmt.Print("Input binary number : ")
+			number, err := inputSanitazed()
+			if err != nil {
+				fmt.Println("The Input must be number")
+			} else {
+				decimal, hex, octal := fromBinary(number)
+				fmt.Println("Decimal :", decimal, "\nHex :", hex, "\nOctal :", octal)
+			}
 		default:
 			fmt.Println("Tidak ada di pilihan")
 	}
